@@ -28,7 +28,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Firefox",  NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -43,8 +43,9 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
-/* key definitions */
-#define MODKEY Mod1Mask
+/* key definitions */    // TODO: find out where ModMask is coming from. What is Mod2Mask or Mod3Mast? Where are they defined? Not in the XKeyboard Layout, already checked there...
+#define MODKEY Mod4Mask  // MODKEY = Super (Windows)
+#define MODKEY2 Mod1Mask // MODKEY2 = Alt
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -58,13 +59,17 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *alacrit[]  = { "alacritty", NULL };
+static const char *firefox[]  = { "firefox", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },     // S-d       Open dmenu
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },      // S-<Enter> Open terminal
+	{ MODKEY,                       XK_a,      spawn,          {.v = alacrit } },      // S-<a>     Open alacritty terminal
+	{ MODKEY2,                      XK_f,      spawn,          {.v = firefox } },      // S-<a>     Open firefox
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },           // Super-j  Rotate between windows in the stack
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
@@ -72,10 +77,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_q,      killclient,     {0} },                  // Super-Q Kill window
+	{ MODKEY2,                      XK_F4,     killclient,     {0} },                  // Alt-F4  Kill window
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },   // set windows tiling mode
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },   // set windows to floating mode
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },   // set windows to monacle mode
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -93,7 +99,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },                // Super-Shift-Q   quit x-session
 };
 
 /* button definitions */
